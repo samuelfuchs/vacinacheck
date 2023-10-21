@@ -7,6 +7,7 @@ const ClientRegistration = () => {
   const { clientId } = useParams();
   console.log("clientId", clientId);
   const [name, setName] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [selectedGender, setSelectedGender] = useState(0);
   const [birthday, setBirthday] = useState("");
   const [cpf, setCpf] = useState("");
@@ -17,6 +18,8 @@ const ClientRegistration = () => {
   const [emergencyContact, setEmergencyContact] = useState();
   const [allergies, setAllergies] = useState("");
   const [address, setAddress] = useState("");
+
+
 
   useEffect(() => {
     if (clientId !== "new") {
@@ -45,6 +48,27 @@ const ClientRegistration = () => {
   const generateClientId = () => {
     return Math.random().toString(36).substr(2, 9);
   };
+
+  const fetchAddressData = async () => {
+    if (zipCode.length === 8) {
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${zipCode}/json/`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          // Update the address state with the fetched data
+          setAddress(data.logradouro);
+          // You can update other address fields (city, state, etc.) as needed
+        } else {
+          console.error("Failed to fetch address data");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    }
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
